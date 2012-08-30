@@ -21,8 +21,14 @@ struct corcparse_node
 struct corcparse_parser
 {
     size_t count;
+    bool fatal;
+    enum corcparse_error err;
     enum corcparse_types filetype;
+    char **files;
+    size_t nfiles;
     CorcParseNode *head;
 };
+
+extern CorcParser *corcparse_new(enum corcparse_types type);
 
 #endif /* CORC_PARSE_H */
