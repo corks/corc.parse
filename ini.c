@@ -4,10 +4,9 @@
 CorcParseNode corcparse_ini_stream(const char *in)
 {
     char *copy, *ptr, *s;
-    /*CorcString *cs;*/
-    CorcParseNode *n, *p, *section;
+    CorcParseNode *head, *n, *p, *section;
 
-    n = p = section = NULL;
+    head = n = p = section = NULL;
 
     copy = strdup(in);
 
@@ -26,7 +25,7 @@ CorcParseNode corcparse_ini_stream(const char *in)
             continue;
         
         /* If this line is a section */
-        if (*s == '[' && *ptr == ']') 
+        else if (*s == '[' && *ptr == ']') 
         {
             n = corparse_node_new();
             n->root = true;
@@ -36,13 +35,45 @@ CorcParseNode corcparse_ini_stream(const char *in)
             {
                 p->next = n;
                 n->prev = p;
-                if (p->parent)
-                    n->parent = p->parent;
             }
+
+            section = n;
+
+            if (!head)
+                head = n;
         }
-        
+
+        else if ((ptr = strchr(s, '='))
+        {
+            n = corcparse_node_new();
+            if (section)
+            {
+                n->root = false;
+                n->parent = section;
+            }
+            else
+                n->root = true;
+
+            if (p)
+            {
+                if (p == section)
+                    section->data = n;
+                else
+                {
+                    p->next = n;
+                    n->prev = p;
+                }
+            }
+
+            *ptr = '\0';
+
+            while (isspace(*s))
+                *s++;
+            while (isspace(--*ptr));
+            (*ptr + 1) = '\0';
+
+            n->name = strdup(s);
     }
-    
 }
 
 size_t corcparse_ini(CorcParser *parser)
