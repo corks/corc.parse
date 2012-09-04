@@ -30,5 +30,6 @@ struct corcparse_parser
 };
 
 extern CorcParser *corcparse_new(enum corcparse_types type);
+extern CorcParseNode *corcparse_node_new();
 
 #endif /* CORC_PARSE_H */
